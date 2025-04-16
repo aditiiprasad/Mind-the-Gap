@@ -1,0 +1,32 @@
+/* Add to your global CSS */
+.confetti-animation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: confetti 2s infinite;
+}
+
+@keyframes confetti {
+  0% { transform: rotate(0deg); opacity: 1; }
+  100% { transform: rotate(360deg); opacity: 0; }
+}
+
+
+@keyframes gradientAnimation {
+  0% {
+    stroke: #ff7f50;
+  }
+  50% {
+    stroke: #ff6347;
+  }
+  100% {
+    stroke: #ff7f50;
+  }
+}
+
+.text-gradient-animation {
+  stroke: #ff7f50;
+  stroke-linecap: round;
+  animation: gradientAnimation 1s infinite;
+}
