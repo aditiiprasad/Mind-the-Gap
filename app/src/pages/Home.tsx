@@ -15,7 +15,7 @@ export default function Home() {
       <Header />
       <div className="flex-grow flex flex-col justify-center items-center backdrop-brightness-50 p-4 text-center">
         <h1 className="text-3xl sm:text-5xl font-extrabold text-white drop-shadow-md mb-8">
-          🧠 Welcome to the Drag & Drop Quiz!
+          Ready?
         </h1>
         <button
           onClick={() => navigate('/game')}
