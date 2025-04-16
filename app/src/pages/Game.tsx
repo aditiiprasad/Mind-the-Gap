@@ -13,6 +13,7 @@ export default function Game() {
   const [timeLeft, setTimeLeft] = useState(30);
   const [userAnswers, setUserAnswers] = useState<any[]>([]);
   const [score, setScore] = useState(0);
+  const [touchedWord, setTouchedWord] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,6 +31,19 @@ export default function Game() {
     }
   };
 
+  const handleTouchStart = (word: string) => {
+    setTouchedWord(word);
+  };
+
+  const handleTouchDrop = (index: number) => {
+    if (touchedWord && !droppedWords.includes(touchedWord)) {
+      const newDropped = [...droppedWords];
+      newDropped[index] = touchedWord;
+      setDroppedWords(newDropped);
+      setTouchedWord(null);
+    }
+  };
+
   const handleNext = () => {
     const isCorrect =
       JSON.stringify(droppedWords) === JSON.stringify(current.correctAnswer);
@@ -38,47 +52,39 @@ export default function Game() {
       setScore((prev) => prev + 1);
     }
 
-    setUserAnswers((prev) => [
-      ...prev,
-      {
-        question: current.question,
-        correct: current.correctAnswer,
-        userAnswer: droppedWords,
-      },
-    ]);
+    const newAnswer = {
+      question: current.question,
+      correct: current.correctAnswer,
+      userAnswer: droppedWords,
+    };
 
     if (currentIndex < questions.length - 1) {
+      setUserAnswers((prev) => [...prev, newAnswer]);
       setCurrentIndex((prev) => prev + 1);
       setDroppedWords([]);
       setTimeLeft(30);
     } else {
       navigate('/result', {
-        state: { score, userAnswers: [...userAnswers, {
-          question: current.question,
-          correct: current.correctAnswer,
-          userAnswer: droppedWords,
-        }] },
+        state: { score: isCorrect ? score + 1 : score, userAnswers: [...userAnswers, newAnswer] },
       });
     }
   };
 
   const handleReset = () => {
     setDroppedWords([]);
+    setTouchedWord(null);
   };
 
   const handleExitGame = () => {
-    
-    setUserAnswers((prev) => [
-      ...prev,
-      {
-        question: current.question,
-        correct: current.correctAnswer,
-        userAnswer: droppedWords,
-      },
-    ]);
+    const newAnswer = {
+      question: current.question,
+      correct: current.correctAnswer,
+      userAnswer: droppedWords,
+    };
 
-    
-    navigate('/result', { state: { score, userAnswers } });
+    navigate('/result', {
+      state: { score, userAnswers: [...userAnswers, newAnswer] },
+    });
   };
 
   const allFilled = droppedWords.filter(Boolean).length === 4;
@@ -95,9 +101,10 @@ export default function Game() {
             key={idx}
             onDrop={(e) => handleDrop(e, index)}
             onDragOver={(e) => e.preventDefault()}
+            onClick={() => handleTouchDrop(index)} 
             className="inline-block h-12 w-28 mx-1 border-2 border-dashed rounded-xl bg-white/70 text-black text-base font-medium text-center align-middle leading-[3rem] transition-all"
           >
-            {droppedWords[index] || '...'}
+            {droppedWords[index] || (touchedWord ? 'Tap to place' : '...')}
           </span>
         );
       }
@@ -111,24 +118,23 @@ export default function Game() {
       <Timer timeLeft={timeLeft} setTimeLeft={setTimeLeft} onTimeout={handleNext} />
       <ProgressIndicator current={currentIndex} total={questions.length} />
 
-      
       <p className="text-xl mb-8 text-center max-w-4xl flex flex-wrap justify-center leading-8 transition-all">
         {renderQuestionWithBoxes()}
       </p>
 
-     
       <div className="flex gap-4 flex-wrap justify-center mb-6">
         {current.options.map((word: string) => (
           <WordOption
             key={word}
             word={word}
             onDragStart={(e, w) => e.dataTransfer.setData('text/plain', w)}
+            onTouchStart={handleTouchStart}
             disabled={droppedWords.includes(word)}
           />
         ))}
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex gap-6 flex-wrap justify-center">
         <button
           onClick={handleReset}
           className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-600 text-black font-semibold py-2 px-6 rounded-lg shadow-md transition-all"

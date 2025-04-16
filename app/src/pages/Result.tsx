@@ -13,19 +13,9 @@ export default function Result() {
   const { score, userAnswers }: { score: number; userAnswers: AnswerItem[] } =
     location.state || { score: 0, userAnswers: [] };
 
-  const [celebration, setCelebration] = useState(false);
-  const [backgroundGif, setBackgroundGif] = useState("");
+ 
 
-  useEffect(() => {
-    if (score >= 7) {
-      setCelebration(true);
-      setBackgroundGif("/celebrate.gif");
-    } else if (score < 5) {
-      setBackgroundGif("/celebrate.gif"); 
-    } else {
-      setBackgroundGif(""); 
-    }
-  }, [score]);
+ 
 
   const handlePlayAgain = () => {
     navigate('/');
@@ -33,21 +23,13 @@ export default function Result() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white flex flex-col items-center p-6 transition-all relative">
-      {backgroundGif && (
-        <img
-          src={backgroundGif}
-          alt="Background Gif"
-          className="absolute top-0 left-0 w-full h-full object-cover opacity-50"
-        />
-      )}
+      
       
       <h1 className="text-4xl font-bold mb-4 text-center z-10">
         {score >= 7 ? '🎉 Celebration Time! 🎉' : score >= 5 ? 'You Did Good!' : 'Better Luck Next Time!'}
       </h1>
 
-      {celebration && (
-        <img src="/confetti.gif" alt="Confetti" className="w-40 h-40 mb-4 animate-bounce z-10" />
-      )}
+      
 
       <p className="text-2xl font-semibold mb-8 z-10">
         You scored <span className="text-green-400">{score}</span> out of {userAnswers.length}!
