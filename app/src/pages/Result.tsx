@@ -19,11 +19,11 @@ export default function Result() {
   useEffect(() => {
     if (score >= 7) {
       setCelebration(true);
-      setBackgroundGif("/celebrate.gif"); // Happy celebration gif
+      setBackgroundGif("/celebrate.gif");
     } else if (score < 5) {
-      setBackgroundGif("/celebrate.gif"); // Sad gif
+      setBackgroundGif("/celebrate.gif"); 
     } else {
-      setBackgroundGif(""); // No background gif for middle range
+      setBackgroundGif(""); 
     }
   }, [score]);
 
